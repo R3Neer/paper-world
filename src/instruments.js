@@ -35,10 +35,10 @@ export function instrumentFactory(THREE,mat,box,bevelBody,bevelRing,bevelOutline
  }
  return function(city,tunnel){
   const root=new THREE.Group(),face=new THREE.Group();root.add(face);const dark=city.kind==='chrono',base=mat(city.color,1),dial=mat('#f2e2cc',2),rim=mat(dark?'#696477':'#d6c7b0',.1);const depth=tunnel?27.335:.335;
-  root.userData={city,face,pivotDepth:depth,materials:[base,dial,rim],state:{status:'idle',total:city.total??0,value:city.total??0,stamp:0},controlsAt:0,split:false,lastSplit:false,controlHover:{primary:false,reset:false},controlHeld:{primary:false,reset:false},homeAmount:0};root.userData.materials.forEach(m=>m.userData.base=m.color.clone());
+  root.userData={city,face,pivotDepth:depth,materials:[base,dial,rim],dialMaterial:dial,state:{status:'idle',total:city.total??0,value:city.total??0,stamp:0},controlsAt:0,split:false,lastSplit:false,controlHover:{primary:false,reset:false},controlHeld:{primary:false,reset:false},displayHover:false,displayPressed:false,displayPulseAt:-1000,homeAmount:0};root.userData.materials.forEach(m=>m.userData.base=m.color.clone());
   bevelBody(root,depth,base);engravedFront(face,dark?'CHRONO':'TIMER',base,dark);bevelRing(face,bevelOutline(2.07,2.52,.08),bevelOutline(1.95,2.40,.035),.035,.135,base);
   box(face,0,.04,.11,1.48,1.04,.016,dial);bevelRing(face,bevelOutline(1.66,1.20),bevelOutline(1.48,1.04),.22,.12,rim,.04);
-  const display=new THREE.Group();display.position.set(0,.04,.13);face.add(display);root.userData.showDigits=digital(display,dark);
+  const display=new THREE.Group();display.position.set(0,.04,.13);face.add(display);root.userData.showDigits=digital(display,dark);root.userData.displayBaseZ=.13;
   if(dark){display.position.y=.20;const fraction=new THREE.Group();fraction.position.set(.34,-.29,.13);fraction.scale.set(.6,.6,.7);face.add(fraction);root.userData.showFraction=digital(fraction,dark,2);}
   if(city.custom){display.visible=false;const custom=lettering(face,'XX:XX',0,1.5,'#786881');custom.scale.setScalar(1.65);}
   const primary=control(face,false),reset=control(face,true);primary.position.set(0,-.90,.15);reset.position.set(-.49,-.90,-.2);reset.visible=false;root.userData.primary=primary;root.userData.reset=reset;root.userData.display=display;

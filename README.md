@@ -50,7 +50,8 @@ The Playwright script records both flows in Microsoft Edge and writes the optimi
 - City search matches city names only, then rebuilds the results as a compact finite matrix around the closest valid block to the previous camera focus. That block remains exactly centered while the other matches reorganize around it.
 - Selecting a world clock that is already in the nine-block scene exchanges the two positions instead of duplicating or rejecting it.
 - Every block responds to pointer and keyboard focus by sinking slightly into its perspective tunnel, consistently across the home scene, CHANGE mode, and all three catalogs.
-- In CHANGE mode, a focused block settles its spring motion while it sinks; the surrounding blocks keep swaying. A timer face opens its duration editor only while its main control reads START. During PAUSE or CONTINUE, that area behaves like the rest of the block.
+- CHANGE shifts the whole scene to a warm yellow paper field. Every block keeps a gentle in-and-out depth oscillation; a focused block still sinks and settles only its rotational spring motion. Direct double-click replacement uses the same yellow selection context.
+- A timer face opens its duration editor only while its main control reads START. In that state hover washes the display with a pale START-blue and pressing it briefly pushes the digits into the face. During PAUSE or CONTINUE, that area behaves like the rest of the block.
 - Timer presets follow a spatial duration order and include sub-minute values. CUSTOM TIMER uses a protected `MM:SS` editor that normalizes overflow and preserves the separator.
 - Timer and chrono controls remain usable in all nine positions. Their buttons physically sink on press, retract into the block when hidden, and emerge at their new positions.
 - The initial scene introduces every time tool immediately: three timer presets occupy the upper row and the chrono sits in the lower center.

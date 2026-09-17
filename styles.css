@@ -1,7 +1,9 @@
+@property --world-bg{syntax:'<color>';inherits:true;initial-value:#4053a8}
 @font-face{font-family:Bangers;src:url('./assets/Bangers-Regular.ttf') format('truetype');font-display:swap}
 *{box-sizing:border-box}body{margin:0;font-family:Arial,sans-serif}button,input{font:inherit}button{cursor:pointer;-webkit-tap-highlight-color:transparent}button:focus-visible,input:focus-visible{outline:3px solid #f4cb68;outline-offset:4px}button:disabled{cursor:default} [hidden]{display:none!important}
-.world-app{position:relative;isolation:isolate;overflow:hidden;background:#4053a8;color:#f2e2cc;container-type:size;min-height:0}
-.world-app::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 49%,#c3b9d9 0,#8790c6 33%,#4053a8 75%);z-index:-2}
+.world-app{--world-bg:#4053a8;position:relative;isolation:isolate;overflow:hidden;background:var(--world-bg);color:#f2e2cc;container-type:size;min-height:0;transition:--world-bg 340ms ease}
+.world-app.editing,.world-app.preparing-selector,.world-app.choosing{--world-bg:#b6963f}
+.world-app::before{content:'';position:absolute;inset:0;background:radial-gradient(ellipse at 50% 49%,color-mix(in srgb,var(--world-bg),#f2e2cc 58%) 0,color-mix(in srgb,var(--world-bg),#cbc3dc 27%) 33%,var(--world-bg) 75%);z-index:-2}
 .world-app::after{content:'';position:absolute;inset:0;pointer-events:none;z-index:-1;background-image:radial-gradient(#28274255 .65px,transparent .8px);background-size:5px 5px;opacity:.35}
 #scene{position:absolute;inset:0;z-index:0}.choosing #scene{z-index:2;pointer-events:none}#scene canvas{width:100%;height:100%;display:block}
 .masthead{position:absolute;top:15px;left:22px;right:22px;display:flex;align-items:center;justify-content:space-between;z-index:5}
@@ -24,7 +26,7 @@
 @media(max-height:680px){.masthead{top:10px}.edition{top:70px}.home-footer{bottom:12px}.home-footer p{margin-bottom:10px}.brand{font-size:35px}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 .masthead{justify-content:center;top:16px}.brand,.edition,.home-footer{display:none}
-.world-app::after{display:none}.choosing::before{background:radial-gradient(ellipse at 50% 49%,#8790c6 0,#4053a8 75%)}
+.world-app::after{display:none}
 .ink-button{border:0;border-radius:3px;box-shadow:0 3px 0 #ac8c48;transform:none;transition:translate 100ms,box-shadow 100ms}.ink-button:active{transform:none;translate:0 2px;box-shadow:0 1px 0 #ac8c48}
 .selector-heading .ink-button{box-shadow:0 3px #afa28e}
 .clock-target:hover{background:none}

@@ -8,7 +8,7 @@ The home scene is a 3 × 3 arrangement whose center block is the protagonist. Ev
 
 The default arrangement exposes the complete product immediately: three distinct timer presets occupy the upper row, Madrid remains the central clock, and the chrono occupies the lower-center slot.
 
-CHANGE is a persistent editing mode. The block faces sway as if their distant prism ends were flexible anchors. Selecting a slot opens the corresponding catalog; completing a replacement returns to CHANGE. Direct double-click replacement returns to the normal scene.
+CHANGE is a persistent editing mode. The block faces sway as if their distant prism ends were flexible anchors while every prism also breathes gently in depth. The warm yellow background distinguishes replacement from the normal blue time-viewing context. Selecting a slot opens the corresponding catalog; completing a replacement returns to CHANGE. Direct double-click replacement returns to the normal scene, but its selector still uses the yellow replacement context.
 
 Entering CHANGE retracts the button and reveals a separate BACK control plus a non-interactive beveled instruction plate. The blocks perform a short staggered depth pulse before settling into their editing sway. In the selector, the destination context and category navigation occupy two separate floating beveled surfaces; the recessed search surface is deliberately larger for touch use.
 
@@ -18,9 +18,9 @@ CLOCKS and TIMERS are fixed, complete two-dimensional matrices embedded in the s
 
 A non-empty search query intentionally leaves that model. City queries match city names rather than incidental substrings in country names. The query destroys the wrapped catalog and lays only its matches into a compact finite matrix, making the result boundary explicit. The result nearest to the camera's previous focal block becomes the new anchor and occupies the exact center; the remaining matches form concentric square rings around it. Clearing the query restores the complete wrapped matrix and recenters the current block.
 
-All blocks share one depth response. Pointer or keyboard focus pushes the entire prism slightly away from the camera, so hover reads as physical recession rather than a two-dimensional scale effect. This applies in the home scene, CHANGE mode, and every catalog. During CHANGE, focus also damps the selected prism's spring rotation to rest while the other blocks continue moving.
+All blocks share one depth response. Pointer or keyboard focus pushes the entire prism slightly away from the camera, so hover reads as physical recession rather than a two-dimensional scale effect. This applies in the home scene, CHANGE mode, and every catalog. During CHANGE, focus damps the selected prism's spring rotation but preserves both its continuous depth oscillation and the additional hover recession.
 
-The timer display is an editing target only while its primary control says START. Once the timer is running or paused, that invisible editing layer is removed and the same surface routes to the generic block interaction.
+The timer display is an editing target only while its primary control says START. Pale blue hover feedback identifies that temporary editing affordance, and pressing it drives a short recessed digit pulse before the editor opens. Once the timer is running or paused, that invisible editing layer is removed and the same surface routes to the generic block interaction.
 
 The vertical mode controls are stable relative to the current catalog: the neighboring category above moves the camera upward; the neighboring category below moves it downward. The catalog header and recessed search surface remain above scene geometry.
 

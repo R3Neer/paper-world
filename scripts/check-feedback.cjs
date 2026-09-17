@@ -1,0 +1,38 @@
+const {chromium}=require('@playwright/test');
+const fs=require('fs');
+
+const baseUrl=process.env.DEMO_URL||'http://127.0.0.1:5186/';
+const assert=(condition,message)=>{if(!condition)throw new Error(message);};
+const rgb=async page=>page.locator('#app').evaluate(el=>getComputedStyle(el).backgroundColor);
+const screen=async page=>page.locator('.device-canvas').evaluate(el=>getComputedStyle(el).getPropertyValue('--dc-screen-background').trim());
+
+(async()=>{
+ const browser=await chromium.launch({channel:'msedge',headless:true});
+ const page=await browser.newPage({viewport:{width:1264,height:710}});
+ try{
+  fs.mkdirSync('artifacts',{recursive:true});
+  await page.goto(baseUrl);await page.evaluate(()=>localStorage.clear());await page.reload();await page.evaluate(()=>document.fonts.ready);await page.waitForTimeout(400);
+  assert(await rgb(page)==='rgb(64, 83, 168)','Normal mode must keep the blue world background.');
+  await page.screenshot({path:'artifacts/feedback-normal.png'});
+
+  await page.getByRole('button',{name:'CHANGE',exact:true}).click();await page.waitForTimeout(500);
+  assert(await rgb(page)==='rgb(182, 150, 63)','CHANGE must use the warm yellow world background.');
+  assert(await screen(page)==='#b6963f','The device screen must follow the yellow CHANGE context.');
+  const target=page.getByRole('button',{name:'Change 00:30',exact:true});await target.hover();
+  const widths=[];for(let i=0;i<7;i++){widths.push((await target.boundingBox()).width);await page.waitForTimeout(310);}
+  const depthRange=Math.max(...widths)-Math.min(...widths);assert(depthRange>.12,`Hover stopped the continuous depth motion (${depthRange.toFixed(3)} px).`);
+  await page.screenshot({path:'artifacts/feedback-change.png'});
+
+  await page.getByRole('button',{name:'BACK',exact:true}).click();await page.waitForTimeout(850);
+  const editor=page.getByRole('button',{name:'Edit remaining time timer in position 1'});await editor.hover();await page.waitForTimeout(260);
+  await page.screenshot({path:'artifacts/feedback-timer-hover.png'});
+  const box=await editor.boundingBox();await page.mouse.move(box.x+box.width/2,box.y+box.height/2);await page.mouse.down();await page.waitForTimeout(110);
+  await page.screenshot({path:'artifacts/feedback-timer-press.png'});await page.mouse.up();
+
+  await page.reload();await page.evaluate(()=>document.fonts.ready);await page.waitForTimeout(350);
+  await page.getByRole('button',{name:'Make main: Paris',exact:true}).dblclick();await page.locator('#app.choosing').waitFor();await page.waitForTimeout(420);
+  assert(await rgb(page)==='rgb(182, 150, 63)','A direct double-click selector must also use the yellow replacement context.');
+  assert(await screen(page)==='#b6963f','The device screen must remain yellow in a direct selector.');
+  console.log(`Checks passed: context colors, direct-selector color, and hover-preserved depth motion (${depthRange.toFixed(3)} px).`);
+ }finally{await browser.close();}
+})().catch(error=>{console.error(error);process.exit(1)});
