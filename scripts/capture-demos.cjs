@@ -6,11 +6,17 @@ const root=path.resolve(__dirname,'..');
 const frameRoot=path.join(root,'artifacts','demo-frames');
 const frameMs=83;
 const baseUrl=process.env.DEMO_URL||'http://127.0.0.1:5186/';
+const changeColor='rgb(182, 150, 63)';
 
 function resetDir(dir){fs.rmSync(dir,{recursive:true,force:true});fs.mkdirSync(dir,{recursive:true});}
+async function assertChangeMode(page,label){
+ const state=await page.evaluate(()=>({app:getComputedStyle(document.querySelector('#app')).backgroundColor,screen:getComputedStyle(document.querySelector('.device-canvas')).getPropertyValue('--dc-screen-background').trim()}));
+ if(state.app!==changeColor||state.screen!=='#b6963f')throw new Error(`${label}: expected the yellow CHANGE context, received app ${state.app} and screen ${state.screen}.`);
+}
 
 async function prepare(page){
- await page.goto(baseUrl);
+ const separator=baseUrl.includes('?')?'&':'?';
+ await page.goto(`${baseUrl}${separator}capture=${Date.now()}`,{waitUntil:'networkidle'});
  await page.evaluate(()=>localStorage.clear());
  await page.reload();
  await page.evaluate(()=>document.fonts.ready);
@@ -63,7 +69,9 @@ async function spatialWorld({page,hold,tap,type,drag}){
  await hold(1494);
  await tap(page.getByRole('button',{name:'Make main: Paris'}),1411);
  await tap(page.getByRole('button',{name:'CHANGE',exact:true}),1245);
+ await assertChangeMode(page,'Spatial demo after CHANGE');
  await tap(page.getByRole('button',{name:'Change Sydney',exact:true}),1079);
+ await assertChangeMode(page,'Spatial selector');
  await hold(747);
  await drag(page.locator('#catalog'),-115,-90,747);
  const search=page.getByRole('searchbox',{name:'Search a city'});
@@ -76,7 +84,9 @@ async function spatialWorld({page,hold,tap,type,drag}){
 async function instruments({page,hold,tap,hover,type,drag}){
  await hold(1245);
  await tap(page.getByRole('button',{name:'CHANGE',exact:true}),1079);
+ await assertChangeMode(page,'Instrument demo after CHANGE');
  await tap(page.getByRole('button',{name:'Change Seoul',exact:true}),830);
+ await assertChangeMode(page,'Instrument selector');
  await tap(page.getByRole('button',{name:'Move down to TIMERS'}),1162);
  await drag(page.locator('#catalog'),-95,-70,581);
  const customTimer=page.getByRole('button',{name:'CUSTOM TIMER, Timer',exact:true});
