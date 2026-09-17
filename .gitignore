@@ -1,0 +1,7 @@
+node_modules/
+dist/
+artifacts/demo-frames/
+artifacts/*.gif
+artifacts/*.jpg
+scripts/__pycache__/
+.DS_Store

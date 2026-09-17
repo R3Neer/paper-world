@@ -1,0 +1,20 @@
+{
+  "name": "papel-world",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "esbuild src/main.js --bundle --format=iife --loader:.ttf=binary --outfile=script.js --minify",
+    "build:pages": "npm run build && node scripts/build-pages.cjs",
+    "dev": "python -m http.server 5186 --bind 127.0.0.1",
+    "capture:demos": "node scripts/capture-demos.cjs && python scripts/build-gifs.py"
+  },
+  "dependencies": {
+    "opentype.js": "^2.0.0",
+    "three": "0.180.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.55.0",
+    "esbuild": "0.25.10"
+  }
+}

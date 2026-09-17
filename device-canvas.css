@@ -1,0 +1,235 @@
+:root {
+    --dc-logical-width: 438px;
+    --dc-logical-height: 916px;
+}
+
+body.dc-mounted {
+    margin: 0 !important;
+    padding: 0 !important;
+    min-height: 100dvh;
+    display: block !important;
+    overflow: auto;
+}
+
+.device-canvas {
+    --dc-zoom: 1;
+    --dc-handset-rotation: 0deg;
+    --dc-canvas-background: #5147e5;
+    --dc-shell-background: #202124;
+    --dc-shell-border: #08090b;
+    --dc-shell-detail: #45474c;
+    --dc-shell-shadow: #08090b;
+    --dc-screen-background: #c0c0c0;
+    --dc-screen-inset: #08090b;
+    --dc-island: #020203;
+    --dc-zoom-surface: #f7f7fb;
+    --dc-zoom-text: #15162b;
+    --dc-zoom-button: #ffca3a;
+    --dc-zoom-button-text: #15162b;
+    --dc-zoom-border: #15162b;
+    --dc-zoom-shadow: #ff6b9d;
+    --dc-zoom-radius: 18px;
+    --dc-zoom-button-radius: 12px;
+    --dc-zoom-border-width: 2px;
+    --dc-zoom-shadow-x: 5px;
+    --dc-zoom-shadow-y: 6px;
+    --dc-zoom-font: ui-sans-serif, system-ui, sans-serif;
+    min-width: 100%;
+    min-height: 100dvh;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 58px 20px 42px;
+    background: var(--dc-canvas-background);
+}
+
+.dc-stage {
+    position: relative;
+    width: calc(var(--dc-logical-width) * var(--dc-zoom));
+    height: calc(var(--dc-logical-height) * var(--dc-zoom));
+    flex: 0 0 auto;
+}
+
+.dc-shell {
+    position: absolute;
+    inset: 0 auto auto 0;
+    width: var(--dc-logical-width);
+    height: var(--dc-logical-height);
+    transform: scale(var(--dc-zoom));
+    transform-origin: top left;
+    border: 3px solid var(--dc-shell-border);
+    border-radius: 64px;
+    background: var(--dc-shell-background);
+    box-shadow: 11px 13px 0 var(--dc-shell-shadow);
+    isolation: isolate;
+}
+
+.dc-shell::before {
+    content: "";
+    position: absolute;
+    inset: 7px;
+    border: 3px solid var(--dc-shell-detail);
+    border-radius: 57px;
+    pointer-events: none;
+}
+
+.dc-screen {
+    position: absolute;
+    left: 16px;
+    top: 19px;
+    width: 402px;
+    height: 874px;
+    overflow: hidden;
+    border-radius: 49px;
+    background: var(--dc-screen-background);
+    box-shadow: inset 0 0 0 2px var(--dc-screen-inset);
+    z-index: 2;
+}
+
+.dc-content {
+    position: absolute;
+    top: 48px;
+    left: 0;
+    width: 100%;
+    height: 806px;
+    overflow: hidden;
+}
+
+.dc-content > .dc-app {
+    width: 100% !important;
+    height: 100% !important;
+    min-width: 0;
+    max-width: none;
+    min-height: 0;
+    max-height: none;
+    margin: 0 !important;
+}
+
+.dc-dynamic-island {
+    position: absolute;
+    z-index: 30;
+    top: 11px;
+    left: 50%;
+    width: 126px;
+    height: 35px;
+    transform: translateX(-50%);
+    border-radius: 22px;
+    background: var(--dc-island);
+    box-shadow: 0 1px 2px #ffffff24, inset 0 0 0 1px #151515;
+    pointer-events: none;
+}
+
+.dc-dynamic-island::before {
+    content: "";
+    position: absolute;
+    right: 13px;
+    top: 10px;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 38% 38%, #183b6d 0 13%, #07152a 38%, #010205 70%);
+    box-shadow: 0 0 4px #315f9b77;
+}
+
+.dc-dynamic-island::after {
+    content: "";
+    position: absolute;
+    left: 18px;
+    top: 14px;
+    width: 48px;
+    height: 5px;
+    border-radius: 3px;
+    background: #090909;
+}
+
+.dc-home-indicator {
+    position: absolute;
+    z-index: 30;
+    bottom: 7px;
+    left: 50%;
+    width: 132px;
+    height: 5px;
+    transform: translateX(-50%);
+    border-radius: 5px;
+    background: var(--dc-screen-inset);
+    box-shadow: 0 0 0 1px #ffffff38;
+    pointer-events: none;
+}
+
+.dc-side-button {
+    position: absolute;
+    display: block;
+    background: var(--dc-shell-background);
+    border: 2px solid var(--dc-shell-border);
+    border-radius: 3px 0 0 3px;
+    z-index: -1;
+}
+
+.dc-side-button.dc-silent { left: -5px; top: 139px; width: 6px; height: 34px; }
+.dc-side-button.dc-volume-up { left: -5px; top: 194px; width: 6px; height: 67px; }
+.dc-side-button.dc-volume-down { left: -5px; top: 275px; width: 6px; height: 67px; }
+.dc-side-button.dc-power { right: -5px; top: 211px; width: 6px; height: 102px; border-radius: 0 3px 3px 0; }
+
+.dc-zoom-controls {
+    position: fixed;
+    right: 16px;
+    top: 16px;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    padding: 5px;
+    border: var(--dc-zoom-border-width) solid var(--dc-zoom-border);
+    border-radius: var(--dc-zoom-radius);
+    background: var(--dc-zoom-surface);
+    color: var(--dc-zoom-text);
+    box-shadow: var(--dc-zoom-shadow-x) var(--dc-zoom-shadow-y) 0 var(--dc-zoom-shadow);
+    font-family: var(--dc-zoom-font);
+}
+
+.dc-zoom-controls button {
+    width: 42px;
+    height: 38px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--dc-zoom-button-radius);
+    background: var(--dc-zoom-button);
+    color: var(--dc-zoom-button-text);
+    font: 800 24px/1 var(--dc-zoom-font);
+    cursor: pointer;
+    box-shadow: inset 0 2px 0 #ffffff66, inset 0 -3px 0 #00000024;
+}
+
+.dc-zoom-controls button:active { transform: translateY(2px); box-shadow: inset 0 1px 0 #00000030; }
+.dc-zoom-controls button:focus-visible { outline: 3px solid var(--dc-zoom-text); outline-offset: 2px; }
+.dc-zoom-controls output { min-width: 58px; text-align: center; font: 800 12px/1 var(--dc-zoom-font); }
+
+@media (max-width: 520px) {
+    .device-canvas:not(.dc-handset) { padding-left: 8px; padding-right: 8px; }
+    .device-canvas:not(.dc-handset) .dc-zoom-controls { top: auto; bottom: 14px; right: 14px; }
+}
+
+body.dc-handset-mounted { overflow: hidden; background: var(--dc-handset-background, #fff); }
+.device-canvas.dc-handset { display: block; width: 100%; min-width: 0; min-height: 100dvh; height: 100dvh; padding: 0; background: var(--dc-screen-background); overflow: hidden; }
+.dc-handset .dc-zoom-controls,
+.dc-handset .dc-dynamic-island,
+.dc-handset .dc-home-indicator,
+.dc-handset .dc-side-button,
+.dc-handset .dc-shell::before { display: none; }
+.dc-handset .dc-stage { position: relative; width: 100%; height: 100dvh; }
+.dc-handset .dc-shell { position: relative; inset: auto; width: 100%; height: 100dvh; transform: none; border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+.dc-handset .dc-screen { position: relative; inset: auto; width: 100%; height: 100dvh; border-radius: 0; box-shadow: none; }
+.dc-handset .dc-content { position: relative; inset: auto; width: 100%; height: calc(100dvh - env(safe-area-inset-top, 0px) - env(safe-area-inset-bottom, 0px)); margin: env(safe-area-inset-top, 0px) 0 env(safe-area-inset-bottom, 0px); }
+
+@media (orientation: landscape) {
+    body.dc-handset-mounted { position: fixed; inset: 0; width: 100%; height: 100%; overflow: hidden; }
+    .device-canvas.dc-handset { position: fixed; left: 50%; top: 50%; width: 100dvh; height: 100dvw; min-width: 0; min-height: 0; transform: translate(-50%, -50%) rotate(var(--dc-handset-rotation, -90deg)); transform-origin: center; }
+    .dc-handset .dc-stage,
+    .dc-handset .dc-shell,
+    .dc-handset .dc-screen { width: 100%; height: 100%; }
+    .dc-handset .dc-content { height: calc(100% - env(safe-area-inset-left, 0px) - env(safe-area-inset-right, 0px)); margin: env(safe-area-inset-left, 0px) 0 env(safe-area-inset-right, 0px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dc-zoom-controls button:active { transform: none; }
+}
