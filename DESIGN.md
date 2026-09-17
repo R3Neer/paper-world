@@ -22,7 +22,7 @@ All blocks share one depth response. Pointer or keyboard focus pushes the entire
 
 The timer display is an editing target only while its primary control says START. Pale blue hover feedback identifies that temporary editing affordance, and pressing it drives a short recessed digit pulse before the editor opens. Once the timer is running or paused, that invisible editing layer is removed and the same surface routes to the generic block interaction.
 
-The vertical mode controls are stable relative to the current catalog: the neighboring category above moves the camera upward; the neighboring category below moves it downward. The catalog header and recessed search surface remain above scene geometry. On the desktop device canvas, the rendered world fills the complete screen behind the Dynamic Island and home indicator; safe-area offsets move only the controls, so no flat device-background bands can crop the 3D scene.
+The vertical mode controls are stable relative to the current catalog: the neighboring category above moves the camera upward; the neighboring category below moves it downward. The catalog header and recessed search surface remain above scene geometry. Keyboard focus on the search field deepens its existing inset bevel rather than drawing a second outline over the control. On the desktop device canvas, the rendered world fills the complete screen behind the Dynamic Island and home indicator; safe-area offsets move only the controls, so no flat device-background bands can crop the 3D scene.
 
 ## Geometry and materials
 
