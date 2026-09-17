@@ -4,7 +4,7 @@ PAPER WORLD is a mobile world clock, timer, and stopwatch prototype rendered as 
 
 On desktop and tablet, the app appears inside a reusable iPhone canvas with zoom controls. On phones, the interface fills the screen directly.
 
-**[Open the interactive demo](https://r3neer.github.io/papel-world/)**
+**[Open the interactive demo](https://r3neer.github.io/paper-world/)**
 
 ## Demos
 
