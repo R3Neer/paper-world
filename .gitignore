@@ -3,5 +3,6 @@ dist/
 artifacts/demo-frames/
 artifacts/*.gif
 artifacts/*.jpg
+artifacts/*.png
 scripts/__pycache__/
 .DS_Store

@@ -14,7 +14,7 @@ On desktop and tablet, the app appears inside a reusable iPhone canvas with zoom
 
 ### Timers and chrono
 
-![Creating a ten-second timer, adding a chrono, and operating both instruments from secondary positions](./public/demos/02-timers-and-chrono.gif)
+![Creating a ten-second timer and operating both it and the default chrono from secondary positions](./public/demos/02-timers-and-chrono.gif)
 
 ## Run locally
 
@@ -49,6 +49,7 @@ The Playwright script records both flows in Microsoft Edge and writes the optimi
 - The clock and timer catalogs form complete spatial matrices. Drag in any direction, use the wheel or arrow keys, or search by city, country, or duration. Movement always settles on a specific block.
 - Timer presets follow a spatial duration order and include sub-minute values. CUSTOM TIMER uses a protected `MM:SS` editor that normalizes overflow and preserves the separator.
 - Timer and chrono controls remain usable in all nine positions. Their buttons physically sink on press, retract into the block when hidden, and emerge at their new positions.
+- The initial scene introduces every time tool immediately: three timer presets occupy the upper row and the chrono sits in the lower center.
 
 ## Visual system
 

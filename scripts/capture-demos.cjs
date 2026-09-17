@@ -60,9 +60,9 @@ async function record(name,sequence){
 
 async function spatialWorld({page,hold,tap,type,drag}){
  await hold(1494);
- await tap(page.getByRole('button',{name:'Make main: Tokyo'}),1411);
+ await tap(page.getByRole('button',{name:'Make main: Paris'}),1411);
  await tap(page.getByRole('button',{name:'CHANGE',exact:true}),1245);
- await tap(page.getByRole('button',{name:'Change London',exact:true}),1079);
+ await tap(page.getByRole('button',{name:'Change Sydney',exact:true}),1079);
  await hold(747);
  await drag(page.locator('#catalog'),-115,-90,747);
  const search=page.getByRole('searchbox',{name:'Search a city or country'});
@@ -81,9 +81,6 @@ async function instruments({page,hold,tap,type,drag}){
  await tap(page.getByRole('button',{name:'CUSTOM TIMER, Timer',exact:true}),747);
  const duration=page.getByRole('textbox',{name:'Timer minutes and seconds'});
  await duration.press('ControlOrMeta+A');await type('0010');await duration.press('Enter');await hold(1245);
- await tap(page.getByRole('button',{name:'Change Buenos Aires',exact:true}),830);
- await tap(page.getByRole('button',{name:'Move up to CHRONO'}),1079);
- await tap(page.getByRole('button',{name:'CHRONO, Stopwatch',exact:true}),1245);
  await tap(page.getByRole('button',{name:'BACK',exact:true}),996);
  await tap(page.getByRole('button',{name:'Start timer in position 9'}),498);
  await hold(2075);

@@ -6,7 +6,11 @@ PAPER WORLD is a mobile time-tool interface built as one continuous three-dimens
 
 The home scene is a 3 × 3 arrangement whose center block is the protagonist. Every block extends toward a common vanishing point. Saturation communicates depth: the central block is the most vivid, while distant blocks are progressively softer. Promoting a secondary block retracts the scene, routes the old and new protagonists through free spatial channels, and restores the other seven blocks to their original final positions.
 
+The default arrangement exposes the complete product immediately: three distinct timer presets occupy the upper row, Madrid remains the central clock, and the chrono occupies the lower-center slot.
+
 CHANGE is a persistent editing mode. The block faces sway as if their distant prism ends were flexible anchors. Selecting a slot opens the corresponding catalog; completing a replacement returns to CHANGE. Direct double-click replacement returns to the normal scene.
+
+Entering CHANGE retracts the button and reveals a separate BACK control plus a non-interactive beveled instruction plate. The blocks perform a short staggered depth pulse before settling into their editing sway. In the selector, the destination context and category navigation occupy two separate floating beveled surfaces; the recessed search surface is deliberately larger for touch use.
 
 ## Catalogs
 
