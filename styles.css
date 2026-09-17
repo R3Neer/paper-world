@@ -50,18 +50,18 @@
 .editing #edit{opacity:0;transform:translateY(-9px) scale(.68);pointer-events:none}
 .editing .edit-toolbar{opacity:1;transform:none;pointer-events:auto}
 
-#selector::before{left:14px;right:150px;height:112px;top:calc(12px + var(--screen-safe-top,0px))}
-#selector::after{height:124px;bottom:calc(12px + var(--screen-safe-bottom,0px))}
-.selector-heading{left:14px;right:150px;top:calc(12px + var(--screen-safe-top,0px));min-height:112px;height:112px;padding:16px 12px;gap:10px}
+#selector::before{left:14px;right:14px;height:112px;top:calc(12px + var(--screen-safe-top,0px))}
+#selector::after{left:14px;right:150px;height:124px;bottom:calc(12px + var(--screen-safe-bottom,0px))}
+.selector-heading{left:14px;right:14px;top:calc(12px + var(--screen-safe-top,0px));min-height:112px;height:112px;padding:16px 12px;gap:10px}
 .selector-heading .ink-button{flex:0 0 48px;width:48px;min-width:48px;padding:8px}
 .selector-heading div>span{font-size:9px;line-height:1.15;letter-spacing:.85px}
 .selector-heading h1{font-size:32px;line-height:.92;margin-top:8px}
-#mode-nav{right:14px;top:calc(12px + var(--screen-safe-top,0px));width:126px;height:112px;padding:10px;gap:9px;grid-template-rows:1fr 1fr;border:3px solid;border-color:#bdc8ed #4d5b94 #4d5b94 #bdc8ed;border-radius:4px;background:linear-gradient(145deg,#7f8ec7 0 68%,#6878b4 68%);box-shadow:inset 2px 2px 0 #9eabe0,inset -2px -2px 0 #56669f,0 5px 0 #2b2742aa}
+#mode-nav{right:14px;top:auto;bottom:calc(12px + var(--screen-safe-bottom,0px));width:126px;height:124px;padding:10px;gap:9px;grid-template-rows:1fr 1fr;border:3px solid;border-color:#bdc8ed #4d5b94 #4d5b94 #bdc8ed;border-radius:4px;background:linear-gradient(145deg,#7f8ec7 0 68%,#6878b4 68%);box-shadow:inset 2px 2px 0 #9eabe0,inset -2px -2px 0 #56669f,0 5px 0 #2b2742aa}
 .mode-key{height:auto;min-height:38px;padding:0 10px;font-size:19px;gap:7px;white-space:nowrap}
 .mode-key b{font-size:16px}
 #catalog{inset:calc(140px + var(--screen-safe-top,0px)) 0 calc(172px + var(--screen-safe-bottom,0px))}
 .chrono-catalog #catalog{bottom:calc(20px + var(--screen-safe-bottom,0px))}
-#search-form{bottom:calc(12px + var(--screen-safe-bottom,0px));left:14px;right:14px;min-height:124px;padding:15px 17px 16px}
+#search-form{bottom:calc(12px + var(--screen-safe-bottom,0px));left:14px;right:150px;min-height:124px;padding:15px 17px 16px}
 #search-form label{font-size:14px;margin-bottom:9px}
 #search-form>div{min-height:52px}
 #search-form span{font-size:31px;line-height:46px;padding:0 12px}

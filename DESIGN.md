@@ -10,7 +10,7 @@ The default arrangement exposes the complete product immediately: three distinct
 
 CHANGE is a persistent editing mode. The block faces sway as if their distant prism ends were flexible anchors while every prism also breathes gently in depth. The warm yellow background distinguishes replacement from the normal blue time-viewing context. Selecting a slot opens the corresponding catalog; completing a replacement returns to CHANGE. Direct double-click replacement returns to the normal scene, but its selector still uses the yellow replacement context.
 
-Entering CHANGE retracts the button and reveals a separate BACK control plus a non-interactive beveled instruction plate. The blocks perform a short staggered depth pulse before settling into their editing sway. In the selector, the destination context and category navigation occupy two separate floating beveled surfaces; the recessed search surface is deliberately larger for touch use.
+Entering CHANGE retracts the button and reveals a separate BACK control plus a non-interactive beveled instruction plate. The blocks perform a short staggered depth pulse before settling into their editing sway. In the selector, the destination context occupies the complete upper beveled surface. Category navigation moves to its own lower-right plate, beside the recessed search surface, so changing category remains spatially separate from returning to the nine-block scene.
 
 ## Catalogs
 

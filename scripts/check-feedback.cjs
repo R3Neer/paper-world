@@ -37,6 +37,9 @@ const screen=async page=>page.locator('.device-canvas').evaluate(el=>getComputed
   assert(await screen(page)==='#b6963f','The device screen must remain yellow in a direct selector.');
   const selectorUnderlay=await page.locator('#app').evaluate(el=>getComputedStyle(el,'::before').backgroundColor);
   assert(selectorUnderlay!=='rgb(183, 172, 208)','The selector must not restore the obsolete blue-purple underlay.');
-  console.log(`Checks passed: full-screen scene, context colors, direct-selector color, and hover-preserved depth motion (${depthRange.toFixed(3)} px).`);
+  const selectorLayout=await page.evaluate(()=>{const rect=selector=>document.querySelector(selector).getBoundingClientRect(),app=rect('#app'),heading=rect('.selector-heading'),modes=rect('#mode-nav'),search=rect('#search-form');return{headingLeft:heading.left-app.left,headingRight:app.right-heading.right,modesTop:modes.top-app.top,modesBottom:app.bottom-modes.bottom,searchBottom:app.bottom-search.bottom,gap:modes.left-search.right,half:app.height/2};});
+  assert(selectorLayout.headingLeft<15&&selectorLayout.headingRight<15,'The destination card must occupy the complete upper width.');
+  assert(selectorLayout.modesTop>selectorLayout.half&&Math.abs(selectorLayout.modesBottom-selectorLayout.searchBottom)<1&&selectorLayout.gap>=8,'Category navigation must sit beside the search card in the lower-right corner.');
+  console.log(`Checks passed: full-screen scene, selector layout, context colors, direct-selector color, and hover-preserved depth motion (${depthRange.toFixed(3)} px).`);
  }finally{await browser.close();}
 })().catch(error=>{console.error(error);process.exit(1)});
