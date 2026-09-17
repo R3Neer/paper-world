@@ -30,8 +30,8 @@ export function instrumentFactory(THREE,mat,box,bevelBody,bevelRing,bevelOutline
  }
  function control(parent,reset){
   const group=new THREE.Group();parent.add(group);const material=mat(reset?'#f4f0e5':'#80cfc6',.2);box(group,0,0,0,.77,.40,.14,material);bevelRing(group,bevelOutline(.86,.50,.045),bevelOutline(.73,.35,.03),.005,.13,material);
-  const canvas=document.createElement('canvas');canvas.width=256;canvas.height=64;const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;const label=new THREE.Mesh(new THREE.PlaneGeometry(.77,.23),new THREE.MeshBasicMaterial({map:texture,transparent:true,depthWrite:false}));label.position.z=.148;group.add(label);let previous='';
-  group.userData.setLabel=text=>{if(text===previous)return;previous=text;const ctx=canvas.getContext('2d');ctx.clearRect(0,0,256,64);ctx.font='48px Bangers';ctx.fillStyle='#454155';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,128,34,240);texture.needsUpdate=true;};group.userData.label=label;group.userData.setLabel(reset?'RESET':'START');return group;
+  const canvas=document.createElement('canvas');canvas.width=256;canvas.height=72;const texture=new THREE.CanvasTexture(canvas);texture.colorSpace=THREE.SRGBColorSpace;const label=new THREE.Mesh(new THREE.PlaneGeometry(.79,.27),new THREE.MeshBasicMaterial({map:texture,transparent:true,depthWrite:false}));label.position.z=.148;group.add(label);let previous='';
+  group.userData.setLabel=text=>{if(text===previous)return;previous=text;const ctx=canvas.getContext('2d');ctx.clearRect(0,0,256,72);ctx.font='56px Bangers';ctx.fillStyle='#454155';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(text,128,38,246);texture.needsUpdate=true;};group.userData.label=label;group.userData.setLabel(reset?'RESET':'START');return group;
  }
  return function(city,tunnel){
   const root=new THREE.Group(),face=new THREE.Group();root.add(face);const dark=city.kind==='chrono',base=mat(city.color,1),dial=mat('#f2e2cc',2),rim=mat(dark?'#696477':'#d6c7b0',.1);const depth=tunnel?27.335:.335;
