@@ -7,7 +7,8 @@
     "build": "esbuild src/main.js --bundle --format=iife --loader:.ttf=binary --outfile=script.js --minify",
     "build:pages": "npm run build && node scripts/build-pages.cjs",
     "dev": "python -m http.server 5186 --bind 127.0.0.1",
-    "capture:demos": "node scripts/capture-demos.cjs && python scripts/build-gifs.py"
+    "capture:demos": "node scripts/capture-demos.cjs && python scripts/build-gifs.py",
+    "check:selector": "node scripts/check-selector.cjs"
   },
   "dependencies": {
     "opentype.js": "^2.0.0",

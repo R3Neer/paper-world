@@ -14,7 +14,9 @@ Entering CHANGE retracts the button and reveals a separate BACK control plus a n
 
 ## Catalogs
 
-CLOCKS and TIMERS are complete two-dimensional matrices embedded in the same perspective world. Drag, wheel, keyboard, and search navigation always snap to a block center and never expose empty cells. CLOCKS are arranged schematically by longitude and latitude relative to the replaced city. TIMERS progress spatially by duration and include sub-minute presets plus a custom duration. CHRONO contains one large object and has no search field.
+CLOCKS and TIMERS are fixed, complete two-dimensional matrices embedded in the same perspective world. The normal catalog is toroidal: rows and columns wrap continuously, opening it puts the block being replaced in the center, and navigation always snaps to a block. CLOCKS retain circular longitude order, which makes east and west meet naturally, while latitude supplies the vertical ordering. TIMERS progress spatially by duration and include sub-minute presets plus a custom duration. Items already present in the main scene remain visible; choosing an occupied world clock swaps its slot with the block being replaced. CHRONO contains one large object and has no search field.
+
+A non-empty search query intentionally leaves that model. It destroys the wrapped catalog and lays only its matches into a compact finite matrix, making the result boundary explicit. Clearing the query restores the complete wrapped matrix and recenters the current block.
 
 The vertical mode controls are stable relative to the current catalog: the neighboring category above moves the camera upward; the neighboring category below moves it downward. The catalog header and recessed search surface remain above scene geometry.
 

@@ -46,7 +46,9 @@ The Playwright script records both flows in Microsoft Edge and writes the optimi
 - Tap any secondary block to make it the protagonist. The blocks retract, solve the spatial route without crossing, and return at their final positions.
 - CHANGE makes the nine blocks sway from their distant anchor points. Select a slot to replace it with a clock, timer, or chrono.
 - Double-click or double-tap a block to replace it directly and return to the main scene outside CHANGE mode.
-- The clock and timer catalogs form complete spatial matrices. Drag in any direction, use the wheel or arrow keys, or search by city, country, or duration. Movement always settles on a specific block.
+- The complete clock and timer catalogs wrap seamlessly in both directions: every row and column continues into the next one, and opening the selector centers the block being replaced. World clocks follow circular east/west geography, so crossing the Pacific wraps naturally instead of creating an edge.
+- Search deliberately rebuilds the results as a compact finite matrix. Drag in any direction, use the wheel or arrow keys, or search by city, country, or duration; movement always settles on a specific block.
+- Selecting a world clock that is already in the nine-block scene exchanges the two positions instead of duplicating or rejecting it.
 - Timer presets follow a spatial duration order and include sub-minute values. CUSTOM TIMER uses a protected `MM:SS` editor that normalizes overflow and preserves the separator.
 - Timer and chrono controls remain usable in all nine positions. Their buttons physically sink on press, retract into the block when hidden, and emerge at their new positions.
 - The initial scene introduces every time tool immediately: three timer presets occupy the upper row and the chrono sits in the lower center.

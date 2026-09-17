@@ -37,7 +37,7 @@ const camera=new THREE.PerspectiveCamera(42,1,.1,120);camera.position.set(0,0,16
 const catalogCamera=new THREE.PerspectiveCamera(42,1,.1,200);
 const catalogWarmTarget=new THREE.WebGLRenderTarget(2,2,{depthBuffer:true});
 const catalogUnit=64,cellWidth=194,cellHeight=224;
-let catalogColumns=5,panGesture=null,panVelocity={x:0,y:0};
+let catalogColumns=5,panGesture=null,panVelocity={x:0,y:0},catalogWrap=null,catalogScrollAdjusting=false;
 // Four hard light bands plus screen-space print marks. The marks follow light,
 // rather than behaving like a texture pasted uniformly over every material.
 function mat(color,comic=1){
@@ -140,36 +140,56 @@ function finishSelectorClose(now=performance.now()){view='home';editing=returnTo
 function closeSelector(){if(selectorClosing)return;selectorClosing=true;busy=true;selectorStart=performance.now();$('#search').blur();if(reduced.matches)finishSelectorClose();}
 $('#close-selector').addEventListener('click',closeSelector);
 document.addEventListener('keydown',e=>{if(e.key==='Escape'){if(view==='selector')closeSelector();else if(editing)setEdit(false);}});
-function selectCity(id){if(id===slots[selectedSlot]){closeSelector();return;}if(!cities[id].kind&&slots.includes(id))return;if(cities[id].custom){editCustomTimer(id);return;}const picked=choices.find(c=>c.mesh.userData.city.id===id);if(!picked)return;const old=homes[selectedSlot];old.removeFromParent();catalogScene.remove(picked.mesh);choices=choices.filter(c=>c!==picked);homes[selectedSlot]=picked.mesh;const p=placements[selectedSlot];picked.mesh.position.set(...p);picked.mesh.scale.setScalar(selectedSlot===4?1.14:.80);picked.mesh.rotation.z=0;scene.add(picked.mesh);slots[selectedSlot]=id;save();updateLabels();deferClear([old]);installHomeControls();closeSelector();announce(`${cities[id].name} now occupies that position. `);}
-function geographicLayout(available){
- const sorted=[...available].sort((a,b)=>coordinates[a.id][1]-coordinates[b.id][1]),layout=new Map();
- let columns=Math.max(1,Math.floor(Math.sqrt(sorted.length)));
- while(columns>1&&sorted.length%columns)columns--;
- const rows=Math.max(1,sorted.length/columns);
- for(let col=0;col<columns;col++){
-  const column=sorted.slice(col*rows,(col+1)*rows).sort((a,b)=>coordinates[b.id][0]-coordinates[a.id][0]);
-  column.forEach((city,row)=>layout.set(city.id,{col,row}));
+function selectCity(id){
+ if(id===slots[selectedSlot]){closeSelector();return;}
+ if(!cities[id].kind){
+  const occupied=slots.indexOf(id);
+  if(occupied!==-1){
+   const replaced=slots[selectedSlot];[slots[selectedSlot],slots[occupied]]=[slots[occupied],slots[selectedSlot]];save();buildHome();closeSelector();announce(`${cities[id].name} and ${cities[replaced].name} exchanged positions.`);return;
+  }
  }
+ if(cities[id].custom){editCustomTimer(id);return;}const picked=choices.find(c=>c.mesh.userData.city.id===id);if(!picked)return;const old=homes[selectedSlot];old.removeFromParent();catalogScene.remove(picked.mesh);choices=choices.filter(c=>c!==picked);homes[selectedSlot]=picked.mesh;const p=placements[selectedSlot];picked.mesh.position.set(...p);picked.mesh.scale.setScalar(selectedSlot===4?1.14:.80);picked.mesh.rotation.z=0;scene.add(picked.mesh);slots[selectedSlot]=id;save();updateLabels();deferClear([old]);installHomeControls();closeSelector();announce(`${cities[id].name} now occupies that position. `);
+}
+function geographicLayout(available){
+ const columns=6,rows=5,layout=new Map(),sorted=[...available].sort((a,b)=>coordinates[a.id][1]-coordinates[b.id][1]);
+ for(let col=0;col<columns;col++)sorted.slice(col*rows,(col+1)*rows).sort((a,b)=>coordinates[b.id][0]-coordinates[a.id][0]).forEach((city,row)=>layout.set(city.id,{col,row}));
  return {layout,columns,rows};
+}
+function compactLayout(items){const columns=Math.max(1,Math.ceil(Math.sqrt(items.length))),rows=Math.max(1,Math.ceil(items.length/columns)),layout=new Map();items.forEach((item,i)=>layout.set(item.id,{col:i%columns,row:Math.floor(i/columns)}));return{layout,columns,rows};}
+function timerCatalogItems(anchorId){const anchor=cities[anchorId];if(anchor?.kind!=='timer'||timerItems.some(item=>item.id===anchorId))return timerItems;return timerItems.map(item=>item.custom?anchor:item);}
+function anchorForCatalog(anchorSlot=selectedSlot??4){const current=cities[slots[anchorSlot]];if(catalogMode==='clocks')return current&&!current.kind?current.id:(cities[slots[4]]&&!cities[slots[4]].kind?slots[4]:0);if(catalogMode==='timer')return current?.kind==='timer'?current.id:timerItems.find(item=>item.custom).id;return chronoItem.id;}
+function wrappedCell(cell,anchor,columns,rows){const wrap=(value,size)=>((value%size)+size)%size;return{col:wrap(cell.col-anchor.col+Math.floor(columns/2),columns)-Math.floor(columns/2),row:wrap(cell.row-anchor.row+Math.floor(rows/2),rows)-Math.floor(rows/2)};}
+function placeChoice(choice,x,y){choice.x=x;choice.y=y;choice.mesh.position.set(x/catalogUnit,-y/catalogUnit,0);Object.assign(choice.button.style,{left:x-1.035*catalogUnit+'px',top:y-1.26*catalogUnit+'px'});}
+function positionWrappedChoices(recenter=true){
+ if(!catalogWrap||!choices.length)return;const {tileWidth,tileHeight}=catalogWrap;
+ if(recenter&&!catalogScrollAdjusting){let dx=0,dy=0,left=catalog.scrollLeft,top=catalog.scrollTop;while(left<tileWidth*.5){left+=tileWidth;dx+=tileWidth;}while(left>tileWidth*1.5){left-=tileWidth;dx-=tileWidth;}while(top<tileHeight*.5){top+=tileHeight;dy+=tileHeight;}while(top>tileHeight*1.5){top-=tileHeight;dy-=tileHeight;}if(dx||dy){catalogScrollAdjusting=true;catalog.scrollLeft+=dx;catalog.scrollTop+=dy;if(snapTarget){snapTarget.x+=dx;snapTarget.y+=dy;}catalogScrollAdjusting=false;}}
+ const centerX=catalog.scrollLeft+catalog.clientWidth/2,centerY=catalog.scrollTop+catalog.clientHeight/2;
+ choices.forEach(choice=>{const x=choice.baseX+Math.round((centerX-choice.baseX)/tileWidth)*tileWidth,y=choice.baseY+Math.round((centerY-choice.baseY)/tileHeight)*tileHeight;placeChoice(choice,x,y);});
+}
+function reanchorCatalog(anchorSlot=selectedSlot??4){
+ if(!catalogWrap||!choices.length)return;const anchorId=anchorForCatalog(anchorSlot),anchorChoice=choices.find(choice=>choice.mesh.userData.city.id===anchorId)??choices[0],anchor=anchorChoice.rawCell,{columns,rows,tileWidth,tileHeight,padX,padY}=catalogWrap;
+ choices.forEach(choice=>{const cell=wrappedCell(choice.rawCell,anchor,columns,rows);choice.baseX=padX+tileWidth+cell.col*cellWidth;choice.baseY=padY+tileHeight+cell.row*cellHeight;});catalogWrap.anchorId=anchorId;
+ catalog.scrollLeft=tileWidth;catalog.scrollTop=tileHeight;positionWrappedChoices(false);
 }
 let catalogWarmTimer=null;
 function warmCatalogGpu(){if(!choices.length)return;const cw=catalog.clientWidth||w,ch=catalog.clientHeight||Math.max(1,h-217),now=new Date();catalogCamera.aspect=w/h;catalogCamera.position.set((catalog.scrollLeft+cw/2)/catalogUnit,-(catalog.scrollTop+ch/2)/catalogUnit,h/(2*Math.tan(THREE.MathUtils.degToRad(21))*catalogUnit));catalogCamera.updateProjectionMatrix();choices.forEach(({mesh})=>{updateClock(mesh,now);mesh.updateMatrixWorld(true);});const previous=renderer.getRenderTarget();renderer.setRenderTarget(catalogWarmTarget);renderer.clear();renderer.render(catalogScene,catalogCamera);renderer.setRenderTarget(previous);}
 function scheduleCatalogWarm(){if(catalogWarmTimer||choices.length)return;catalogWarmTimer=setTimeout(()=>{catalogWarmTimer=null;if(editing&&view==='home'&&!choices.length){$('#search').value='';buildCatalog(false,4);warmCatalogGpu();}},0);}
-function centerCatalog(anchorSlot=selectedSlot??4){if(!choices.length)return;const viewportWidth=catalog.clientWidth||w,viewportHeight=catalog.clientHeight||Math.max(1,h-217);if(catalogMode!=='clocks'){const middle=choices[Math.floor(choices.length/2)];catalog.scrollLeft=middle.x-viewportWidth/2;catalog.scrollTop=middle.y-viewportHeight/2;return;}const [lat,lon]=coordinates[slots[anchorSlot]]??coordinates[0];const middle=choices.reduce((best,c)=>{const p=coordinates[c.mesh.userData.city.id],b=coordinates[best.mesh.userData.city.id];return Math.hypot(p[0]-lat,(p[1]-lon)*.6)<Math.hypot(b[0]-lat,(b[1]-lon)*.6)?c:best;});catalog.scrollLeft=middle.x-viewportWidth/2;catalog.scrollTop=middle.y-viewportHeight/2;}
+function centerCatalog(anchorSlot=selectedSlot??4){if(!choices.length)return;if(catalogWrap){reanchorCatalog(anchorSlot);return;}const viewportWidth=catalog.clientWidth||w,viewportHeight=catalog.clientHeight||Math.max(1,h-217),anchorId=anchorForCatalog(anchorSlot),middle=choices.find(c=>c.mesh.userData.city.id===anchorId)??choices[Math.floor(choices.length/2)];catalog.scrollLeft=middle.x-viewportWidth/2;catalog.scrollTop=middle.y-viewportHeight/2;}
 function buildCatalog(center=false,anchorSlot=selectedSlot??4){
  choices.forEach(c=>clearGroup(c.mesh));choices=[];panVelocity={x:0,y:0};snapTarget=null;snapDue=0;
- const query=normalize($('#search').value);let filtered=catalogMode==='clocks'?cities.filter(c=>!c.kind&&!slots.includes(c.id)&&normalize(c.name+' '+c.country).includes(query)):catalogMode==='chrono'?[chronoItem]:timerItems.filter(c=>normalize(c.name).includes(query));if(catalogMode==='timer'&&/^\d{1,2}:\d{1,2}$/.test(query)){const [m,sec]=query.split(':').map(Number),total=Math.min(5999,m*60+sec);filtered=timerItems.filter(c=>c.total===total&&!c.custom);if(!filtered.length){const item={id:cities.length,kind:'timer',name:formatDuration(total),country:'Timer',total,color:'#ede4d3'};cities.push(item);filtered=[item];}}
+ const query=normalize($('#search').value),anchorId=anchorForCatalog(anchorSlot),normal=!query&&catalogMode!=='chrono';let source=catalogMode==='clocks'?cities.filter(c=>!c.kind):catalogMode==='chrono'?[chronoItem]:timerCatalogItems(anchorId),filtered=source.filter(c=>catalogMode==='clocks'?normalize(c.name+' '+c.country).includes(query):normalize(c.name).includes(query));if(catalogMode==='timer'&&/^\d{1,2}:\d{1,2}$/.test(query)){const [m,sec]=query.split(':').map(Number),total=Math.min(5999,m*60+sec);filtered=source.filter(c=>c.total===total&&!c.custom);if(!filtered.length){const item={id:cities.length,kind:'timer',name:formatDuration(total),country:'Timer',total,color:'#ede4d3'};cities.push(item);filtered=[item];}}
  const grid=$('#city-grid');grid.replaceChildren();$('#empty').hidden=!!filtered.length;
- const {layout,columns,rows}=catalogMode==='clocks'?geographicLayout(filtered):durationLayout(filtered);catalogColumns=columns;
+ const {layout,columns,rows}=normal?(catalogMode==='clocks'?geographicLayout(filtered):durationLayout(filtered)):compactLayout(filtered);catalogColumns=columns;
  const viewportWidth=catalog.clientWidth||w,viewportHeight=catalog.clientHeight||Math.max(1,h-217),padX=viewportWidth/2,padY=viewportHeight/2;
- grid.style.width=(viewportWidth+(columns-1)*cellWidth)+'px';grid.style.height=(viewportHeight+(rows-1)*cellHeight)+'px';
+ catalogWrap=normal?{columns,rows,tileWidth:columns*cellWidth,tileHeight:rows*cellHeight,padX,padY,anchorId}:null;app.classList.toggle('infinite-catalog',!!catalogWrap);
+ grid.style.width=(normal?viewportWidth+3*catalogWrap.tileWidth:viewportWidth+(columns-1)*cellWidth)+'px';grid.style.height=(normal?viewportHeight+3*catalogWrap.tileHeight:viewportHeight+(rows-1)*cellHeight)+'px';
  filtered.forEach(city=>{
   const cell=layout.get(city.id),x=padX+cell.col*cellWidth,y=padY+cell.row*cellHeight;
   const b=document.createElement('button');b.className='city-choice';b.dataset.city=city.id;b.setAttribute('aria-label',city.name+', '+city.country);
   Object.assign(b.style,{left:x-1.035*catalogUnit+'px',top:y-1.26*catalogUnit+'px',width:2.07*catalogUnit+'px',height:2.52*catalogUnit+'px'});
   b.addEventListener('click',e=>{if(e.detail===0)selectCity(city.id);});
   const mesh=makeClock(city,{tunnel:true});mesh.position.set(x/catalogUnit,-y/catalogUnit,0);catalogScene.add(mesh);
-  const choice={mesh,button:b,x,y};choices.push(choice);
+  const choice={mesh,button:b,x,y,rawCell:cell,baseX:x,baseY:y};choices.push(choice);
   b.addEventListener('focus',()=>{if(view==='selector')snapToClock(choice);});grid.append(b);
  });
  if(choices.length&&center)centerCatalog(anchorSlot);else if(!choices.length){catalog.scrollLeft=0;catalog.scrollTop=0;}
@@ -177,15 +197,16 @@ function buildCatalog(center=false,anchorSlot=selectedSlot??4){
 let snapTarget=null,snapDue=0;
 function snapToClock(choice){
  if(!choices.length)return;
+ positionWrappedChoices();
  if(!choice){const x=catalog.scrollLeft+catalog.clientWidth/2,y=catalog.scrollTop+catalog.clientHeight/2;choice=choices.reduce((best,c)=>Math.hypot(c.x-x,c.y-y)<Math.hypot(best.x-x,best.y-y)?c:best);}
  panVelocity={x:0,y:0};snapDue=0;snapTarget={x:choice.x-catalog.clientWidth/2,y:choice.y-catalog.clientHeight/2};
 }
 function stepCatalogPan(now,dt){
- if(panGesture)return;
+ positionWrappedChoices();if(panGesture)return;
  if(snapDue&&now>=snapDue)snapToClock();
  if(snapTarget){const t=reduced.matches?1:1-Math.exp(-dt/45);catalog.scrollLeft+=(snapTarget.x-catalog.scrollLeft)*t;catalog.scrollTop+=(snapTarget.y-catalog.scrollTop)*t;
   if(Math.abs(catalog.scrollLeft-snapTarget.x)<1&&Math.abs(catalog.scrollTop-snapTarget.y)<1){catalog.scrollLeft=snapTarget.x;catalog.scrollTop=snapTarget.y;snapTarget=null;}
- }else{catalog.scrollLeft+=panVelocity.x*dt;catalog.scrollTop+=panVelocity.y*dt;const friction=Math.exp(-dt/90);panVelocity.x*=friction;panVelocity.y*=friction;}
+ }else{catalog.scrollLeft+=panVelocity.x*dt;catalog.scrollTop+=panVelocity.y*dt;const friction=Math.exp(-dt/90);panVelocity.x*=friction;panVelocity.y*=friction;}positionWrappedChoices();
 }
 const catalog=$('#catalog');
 const pickingRay=new THREE.Raycaster(),pickingPoint=new THREE.Vector2();
@@ -204,9 +225,9 @@ catalog.addEventListener('pointermove',e=>{const g=panGesture;if(!g||g.id!==e.po
 catalog.addEventListener('pointerup',e=>{const g=panGesture;if(!g||g.id!==e.pointerId)return;panGesture=null;snapDue=performance.now()+150;catalog.classList.remove('is-dragging');if(catalog.hasPointerCapture(e.pointerId))catalog.releasePointerCapture(e.pointerId);if(!g.moved&&g.city!==undefined)selectCity(Number(g.city));if(reduced.matches||e.timeStamp-g.last>100)panVelocity={x:0,y:0};});
 catalog.addEventListener('pointercancel',()=>{panGesture=null;panVelocity={x:0,y:0};catalog.classList.remove('is-dragging');});
 catalog.addEventListener('wheel',()=>{snapTarget=null;snapDue=performance.now()+140;panVelocity={x:0,y:0};},{passive:true});
-catalog.addEventListener('scroll',()=>{if(!panGesture&&!snapTarget&&Math.hypot(panVelocity.x,panVelocity.y)<.02&&!snapDue)snapDue=performance.now()+140;},{passive:true});
+catalog.addEventListener('scroll',()=>{positionWrappedChoices();if(!catalogScrollAdjusting&&!panGesture&&!snapTarget&&Math.hypot(panVelocity.x,panVelocity.y)<.02&&!snapDue)snapDue=performance.now()+140;},{passive:true});
 catalog.addEventListener('keydown',e=>{const delta={ArrowLeft:[-140,0],ArrowRight:[140,0],ArrowUp:[0,-170],ArrowDown:[0,170]}[e.key];if(delta){e.preventDefault();panVelocity={x:0,y:0};snapTarget=null;catalog.scrollBy(...delta);snapDue=performance.now()+80;}});
-$('#search').addEventListener('input',()=>buildCatalog(true));$('#clear-search').addEventListener('click',()=>{$('#search').value='';buildCatalog();$('#search').focus();});$('#search-form').addEventListener('submit',e=>{e.preventDefault();$('#search').blur();const first=choices.find(c=>!c.button.disabled);first?.button.focus();});
+$('#search').addEventListener('input',()=>buildCatalog(true));$('#clear-search').addEventListener('click',()=>{$('#search').value='';buildCatalog(true);$('#search').focus();});$('#search-form').addEventListener('submit',e=>{e.preventDefault();$('#search').blur();const first=choices.find(c=>!c.button.disabled);first?.button.focus();});
 
 function formatDuration(seconds){seconds=Math.max(0,Math.min(5999,Math.round(seconds)));return `${String(Math.floor(seconds/60)).padStart(2,'0')}:${String(seconds%60).padStart(2,'0')}`;}
 function parseTimerValue(value){const digits=value.replace(/\D/g,'').padEnd(4,'0').slice(0,4),minutes=Number(digits.slice(0,2)),seconds=Number(digits.slice(2));return Math.min(5999,minutes*60+seconds);}
