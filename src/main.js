@@ -60,9 +60,22 @@ function mat(color,comic=1){
  float stripeId=floor(surface.x*3.5),section=floor((surface.y+hash(stripeId)*8.0)/11.0);float seed=hash(stripeId*17.0+section*41.0);
  float strokeWidth=mix(.035,.075,seed);float stripe=1.0-smoothstep(strokeWidth,strokeWidth+.015,abs(fract(surface.x*3.5)-.5));
  float segment=fract((surface.y+hash(stripeId)*8.0)/11.0);float stroke=stripe*step(.08,segment)*step(segment,mix(.40,.94,hash(seed*93.0)))*step(.76,seed)*(1.0-front);
+ // A side stroke that reaches the front edge turns briefly over it instead of
+ // ending on a hard seam. Its tangential seed matches the adjacent wall, while
+ // a second hash varies how far each individual ink mark wraps onto the face.
+ float wrapStroke=0.0;
+ if(front>.5&&finish>.5&&finish<1.5){
+  vec2 edgeGap=vec2(1.035,1.260)-abs(localPoint.xy);float useX=step(edgeGap.x,edgeGap.y);
+  float tangent=mix(localPoint.x,localPoint.y,useX),distanceToEdge=mix(edgeGap.y,edgeGap.x,useX);
+  float wrapId=floor(tangent*3.5),wrapSeed=hash(wrapId*17.0),edgeSegment=fract((.035+hash(wrapId)*8.0)/11.0);
+  float wrapWidth=mix(.035,.075,wrapSeed),wrapLine=1.0-smoothstep(wrapWidth,wrapWidth+.015,abs(fract(tangent*3.5)-.5));
+  float reachesEdge=step(.08,edgeSegment)*step(edgeSegment,mix(.40,.94,hash(wrapSeed*93.0)))*step(.76,wrapSeed);
+  float wrapLength=mix(.035,.115,hash(wrapSeed*137.0+wrapId*11.0));
+  wrapStroke=wrapLine*reachesEdge*step(0.0,distanceToEdge)*(1.0-smoothstep(wrapLength*.72,wrapLength,distanceToEdge));
+ }
  float printWeight=finish<.5?1.0:finish<1.5?.40:.82;float strokeWeight=finish<.5?.22:finish<1.5?1.0:.80;
  float marks=shadowInk*.72*printWeight;
- float mark=clamp(marks*min(comic,1.0)+stroke*.85*strokeWeight,0.0,.88);
+ float mark=clamp(marks*min(comic,1.0)+max(stroke,wrapStroke)*.85*strokeWeight,0.0,.88);
  if(comic>1.5)mark=printDots*.38;
  if(dot(pigment,vec3(.333))<.24)ink=vec3(.63,.63,.73);
  shaded=mix(shaded,ink,mark);shaded*=1.0+tooth*.065;

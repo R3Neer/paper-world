@@ -28,7 +28,7 @@ The vertical mode controls are stable relative to the current catalog: the neigh
 
 Forms are simple except where depth communicates construction. Block bodies, front faces, clock recesses, digital segments, hands, hubs, lettering, and controls use geometric depth and restrained bevels. City, TIMER, and CHRONO labels are cut into their blocks. Analog hands use asymmetrical elongated diamond profiles with a raised center ridge.
 
-The material direction is graphic paper rather than skeuomorphic cardboard. A custom cel shader quantizes light into discrete bands. Deep shadow receives cross-hatching; middle shadow receives sparse linear hatching and Ben-Day dots; bright faces retain a controlled paper grain. Longitudinal ink strokes are scarce, long, and variable. Light clock faces carry dots; colored surrounds do not.
+The material direction is graphic paper rather than skeuomorphic cardboard. A custom cel shader quantizes light into discrete bands. Deep shadow receives cross-hatching; middle shadow receives sparse linear hatching and Ben-Day dots; bright faces retain a controlled paper grain. Longitudinal ink strokes are scarce, long, and variable. Strokes that reach the front edge wrap a short, individually varied distance around the bevel instead of terminating at a perfectly straight seam. Light clock faces carry dots; colored surrounds do not.
 
 The palette combines medium-vivid coral, turquoise, yellow, violet, green, and blue with softer distant variants. Timer blocks stay near white. Chrono blocks stay near black-violet with light wall strokes and a clearly readable recessed title. Pure black is avoided on clock hands and large material surfaces.
 
