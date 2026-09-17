@@ -14,7 +14,7 @@ On desktop and tablet, the app appears inside a reusable iPhone canvas with zoom
 
 ### Timers and chrono
 
-![Creating a ten-second timer and operating both it and the default chrono from secondary positions](./public/demos/02-timers-and-chrono.gif)
+![Hovering the custom timer, creating a ten-second duration, and operating both it and the default chrono from secondary positions](./public/demos/02-timers-and-chrono.gif)
 
 ## Run locally
 

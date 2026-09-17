@@ -45,6 +45,7 @@ async function record(name,sequence){
   await page.evaluate(({x,y})=>{const marker=document.querySelector('#demo-touch');marker.classList.remove('hit');void marker.offsetWidth;marker.style.left=`${x}px`;marker.style.top=`${y}px`;marker.classList.add('hit')},{x,y});
  };
  const tap=async(locator,after=500,position)=>{await mark(locator,position);await locator.click(position?{position}:undefined);await hold(after)};
+ const hover=async(locator,after=500)=>{await locator.hover();await hold(after)};
  const type=async text=>{for(const key of text){await page.keyboard.press(key);await hold(frameMs)}};
  const drag=async(locator,dx,dy,duration=664)=>{
   const box=await locator.boundingBox();if(!box)throw new Error('Drag surface is not visible');
@@ -53,7 +54,7 @@ async function record(name,sequence){
   for(let i=1;i<=steps;i++){const t=i/steps,eased=t*t*(3-2*t);await page.mouse.move(from.x+dx*eased,from.y+dy*eased);await hold(frameMs)}
   await page.mouse.up();await hold(332);
  };
- try{await prepare(page);await sequence({page,hold,tap,type,drag});}
+ try{await prepare(page);await sequence({page,hold,tap,hover,type,drag});}
  finally{await browser.close()}
  console.log(`${name}: ${number} frames (${(number*frameMs/1000).toFixed(1)} s)`);
 }
@@ -72,13 +73,15 @@ async function spatialWorld({page,hold,tap,type,drag}){
  await hold(1494);
 }
 
-async function instruments({page,hold,tap,type,drag}){
+async function instruments({page,hold,tap,hover,type,drag}){
  await hold(1245);
  await tap(page.getByRole('button',{name:'CHANGE',exact:true}),1079);
  await tap(page.getByRole('button',{name:'Change Seoul',exact:true}),830);
  await tap(page.getByRole('button',{name:'Move down to TIMERS'}),1162);
  await drag(page.locator('#catalog'),-95,-70,581);
- await tap(page.getByRole('button',{name:'CUSTOM TIMER, Timer',exact:true}),747);
+ const customTimer=page.getByRole('button',{name:'CUSTOM TIMER, Timer',exact:true});
+ await hover(customTimer,664);
+ await tap(customTimer,747);
  const duration=page.getByRole('textbox',{name:'Timer minutes and seconds'});
  await duration.press('ControlOrMeta+A');await type('0010');await duration.press('Enter');await hold(1245);
  await tap(page.getByRole('button',{name:'BACK',exact:true}),996);
