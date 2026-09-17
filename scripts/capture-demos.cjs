@@ -65,7 +65,7 @@ async function spatialWorld({page,hold,tap,type,drag}){
  await tap(page.getByRole('button',{name:'Change Sydney',exact:true}),1079);
  await hold(747);
  await drag(page.locator('#catalog'),-115,-90,747);
- const search=page.getByRole('searchbox',{name:'Search a city or country'});
+ const search=page.getByRole('searchbox',{name:'Search a city'});
  await tap(search,415);await type('ROME');await hold(830);
  await tap(page.getByRole('button',{name:'Rome, Italy',exact:true}),1245);
  await tap(page.getByRole('button',{name:'BACK',exact:true}),1079);
