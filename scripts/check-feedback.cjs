@@ -12,6 +12,8 @@ const screen=async page=>page.locator('.device-canvas').evaluate(el=>getComputed
  try{
   fs.mkdirSync('artifacts',{recursive:true});
   await page.goto(baseUrl);await page.evaluate(()=>localStorage.clear());await page.reload();await page.evaluate(()=>document.fonts.ready);await page.waitForTimeout(400);
+  const viewport=await page.evaluate(()=>{const screen=document.querySelector('.dc-screen').getBoundingClientRect(),content=document.querySelector('.dc-content').getBoundingClientRect();return{top:Math.abs(screen.top-content.top),height:Math.abs(screen.height-content.height)}});
+  assert(viewport.top<.5&&viewport.height<.5,`The framed app must fill the complete device screen (${viewport.top.toFixed(1)} px top gap, ${viewport.height.toFixed(1)} px height gap).`);
   assert(await rgb(page)==='rgb(64, 83, 168)','Normal mode must keep the blue world background.');
   await page.screenshot({path:'artifacts/feedback-normal.png'});
 
@@ -33,6 +35,8 @@ const screen=async page=>page.locator('.device-canvas').evaluate(el=>getComputed
   await page.getByRole('button',{name:'Make main: Paris',exact:true}).dblclick();await page.locator('#app.choosing').waitFor();await page.waitForTimeout(420);
   assert(await rgb(page)==='rgb(182, 150, 63)','A direct double-click selector must also use the yellow replacement context.');
   assert(await screen(page)==='#b6963f','The device screen must remain yellow in a direct selector.');
-  console.log(`Checks passed: context colors, direct-selector color, and hover-preserved depth motion (${depthRange.toFixed(3)} px).`);
+  const selectorUnderlay=await page.locator('#app').evaluate(el=>getComputedStyle(el,'::before').backgroundColor);
+  assert(selectorUnderlay!=='rgb(183, 172, 208)','The selector must not restore the obsolete blue-purple underlay.');
+  console.log(`Checks passed: full-screen scene, context colors, direct-selector color, and hover-preserved depth motion (${depthRange.toFixed(3)} px).`);
  }finally{await browser.close();}
 })().catch(error=>{console.error(error);process.exit(1)});
